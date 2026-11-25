@@ -145,19 +145,19 @@ def feature():
     d = ImageDraw.Draw(img)
     kf = font(SANS_B, 11)
     d.text((0, 0), "TECH  \u00b7  WHITE HOUSE  \u00b7  TUESDAY 24 NOVEMBER 2026", font=kf, fill=RED)
-    hf = font(DISPLAY, 30)
-    d.text((0, 14), "HUANG IS BACK \u2014 AND SAYS SORRY", font=hf, fill=INK)
+    hf = font(DISPLAY, 34)
+    d.text((0, 12), "HUANG IS BACK \u2014 AND SAYS SORRY", font=hf, fill=INK)
     df = font(SERIF, 15)
     deck = ("Nvidia\u2019s board restores its chief 11 days after he quit; Trump called the board himself.")
-    d.text((0, 50), deck, font=df, fill=INK)
+    d.text((0, 54), deck, font=df, fill=INK)
     bf = font(SERIF, 12)
     body = ("Jensen Huang apologised to staff on Tuesday, a day after Nvidia\u2019s board unanimously "
             "restored him as chief executive. Shares soared 31.5% on Monday to about $165 \u2014 "
             "adding roughly $952bn in a day \u2014 then fell 5.9% on Tuesday. Inquiries continue.")
-    y = 70
+    y = 74
     for line in wrap(d, body, bf, 976):
         d.text((0, y), line, font=bf, fill=INK)
-        y += 16
+        y += 15
     save(img, "t_feat0.png")
 
 
@@ -435,6 +435,9 @@ def hero():
     d.text((856, 56), "+31.5% MON", font=cf, fill=RED)
     sf = font(SANS, 10)
     d.text((856, 74), "\u22125.9% Tue", font=sf, fill=INK)
+    # floor shadows for depth (third layer)
+    d.rectangle([210, 148, 460, 152], fill=(20, 30, 50))
+    d.rectangle([540, 152, 850, 156], fill=(205, 194, 168))
     # --- seam stamp
     cx, cy, r = 488, 79, 28
     d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=PAPER, outline=RED, width=3)
@@ -622,6 +625,18 @@ def worldmap():
     def px(lon, lat):
         return (4 + (lon + 180) / 360.0 * (W - 8),
                 14 + (75 - lat) / 130.0 * (H - 18))
+
+    # graticule (atlas layer, drawn under the continents)
+    for lon in range(-150, 181, 30):
+        x, _ = px(lon, 75)
+        d.line([(x, 14), (x, H - 4)], fill=(205, 197, 175), width=1)
+    for lat in range(60, -46, -30):
+        _, y = px(0, lat)
+        d.line([(4, y), (W - 4, y)], fill=(205, 197, 175), width=1)
+    # compass rose, top right
+    d.ellipse([306, 16, 322, 32], outline=INK, width=1)
+    d.polygon([(314, 18), (317, 28), (314, 26), (311, 28)], fill=RED)
+    d.text((311, 32), "N", font=font(SANS_B, 7), fill=INK)
 
     for poly in CONTINENTS.values():
         d.polygon([px(lon, lat) for lon, lat in poly], fill=(196, 188, 164),
